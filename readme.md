@@ -1,181 +1,249 @@
+# 🔴⚫ Vitória Bot - Bot do EC Vitória
 
-# 🔴⚫ Bot Twitter - EC Vitória
+Bot automatizado que coleta estatísticas do EC Vitória do site da UFMG e posta atualizações no Twitter.
 
-Bot automatizado que posta diariamente no Twitter as estatísticas do Esporte Clube Vitória no Campeonato Brasileiro Série A, incluindo classificação geral e probabilidades matemáticas.
+## 🤖 Automação
 
 ## 📋 Funcionalidades
 
-O bot coleta e posta automaticamente:
+* ✅ Coleta dados da classificação geral do Brasileirão Série A
+* ✅ Extrai probabilidades de rebaixamento
+* ✅ Extrai probabilidades de classificação para Libertadores
+* ✅ Extrai probabilidades de classificação para Sul-Americana
+* ✅ **Verifica se dados mudaram antes de postar (evita duplicação)**
+* ✅ Formata tweet com todas as informações
+* ✅ Posta automaticamente no Twitter
+* ✅ **Roda 2x por dia: 9h e 22h**
+* ✅ Sistema de logs completo
+* ✅ Modo de teste para visualizar tweet antes de postar
 
-* **📊 Classificação Geral** : Posição, pontos, jogos, vitórias, empates, derrotas, saldo de gols e rendimento
-* **⬇️🛑 Probabilidade de Rebaixamento** : Chance matemática de queda para Série B
-* **🏆 Probabilidade de Classificação para Sul-Americana** : Chance de vaga na competição continental
-* **🏆 Probabilidade de Classificação para Libertadores** : Chance de vaga na principal competição da América do Sul
+## 🏗️ Estrutura do Projeto
 
-### Exemplo de Tweet
+```
+vitoria-bot/
+├── config/
+│   ├── __init__.py
+│   └── settings.py          # Configurações centralizadas
+├── src/
+│   ├── __init__.py 
+│   ├── cache.py
+│   ├── scraper.py           # Coleta de dados (web scraping)
+│   ├── formatter.py         # Formatação de tweets
+│   └── twitter_client.py    # Integração com Twitter API
+├── tests/
+│   └── test_bot.py
+├── logs/
+│   └── vitoria_bot.log      # Arquivo de log
+├── main.py                  # Script principal
+├── requirements.txt         # Dependências
+└── README.md               # Este arquivo
+```
+
+## 🚀 Instalação
+
+### 1. Clone o repositório (ou copie os arquivos)
+
+### 2. Instale as dependências
+
+bash
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure as variáveis de ambiente
+
+Crie um arquivo `.env` ou exporte as variáveis:
+
+bash
+
+```bash
+exportAPI_KEY="sua_consumer_key"
+exportAPI_SECRET="sua_consumer_secret"
+exportACCESS_TOKEN="seu_access_token"
+exportACCESS_TOKEN_SECRET="seu_access_token_secret"
+```
+
+#### Como obter credenciais do Twitter:
+
+1. Acesse [https://developer.twitter.com/](https://developer.twitter.com/)
+2. Crie um App no Twitter Developer Portal
+3. Gere as credenciais necessárias (API Key, API Secret, Access Token, Access Token Secret)
+4. Configure as permissões de leitura e escrita
+
+## 💻 Uso
+
+### Modo Normal (posta no Twitter)
+
+bash
+
+```bash
+python main.py
+```
+
+ **Importante** : Só posta se os dados mudaram desde o último post!
+
+### Modo Teste (apenas visualiza o tweet)
+
+bash
+
+```bash
+python main.py --test
+# ou
+python main.py -t
+```
+
+O modo teste é útil para:
+
+* Verificar se os dados estão sendo coletados corretamente
+* Visualizar como o tweet ficará formatado
+* Testar sem fazer postagens reais
+
+### Modo Forçar (posta mesmo se dados não mudaram)
+
+bash
+
+```bash
+python main.py --force
+# ou
+python main.py -f
+```
+
+### Combinar flags
+
+bash
+
+```bash
+# Testar modo forçado sem postar
+python main.py --test --force
+```
+
+## 🎯 Personalização
+
+### Alterar o time
+
+Edite `config/settings.py`:
+
+python
+
+```python
+TIME_ALVO ="NOME_DO_TIME"# Em maiúsculas, sem acentos
+EMOJI_TIME ="🔵⚪"# Emojis do seu time
+```
+
+### Alterar emojis e labels
+
+Edite os dicionários `EMOJIS` e `LABELS` em `config/settings.py`
+
+### Modificar formato do tweet
+
+Edite as funções em `src/formatter.py`
+
+## 📊 Exemplo de Tweet
 
 ```
 EC VITÓRIA 🔴⚫
-📅 29/12/25
+📅 31/12/25
 
 📊 Serie A
-Posicao: 11º
+Posicao: 12º
 Pnts: 45
 Jogos: 38/38
 🎯 V: 12 | E: 9 | D: 17
 SG: -8
 Rendimento: 39.47%
-
-⬇️🛑 Risco de Rebaixamento
-(%): 0.00%
-
+⬇🛑 Risco de Rebaixamento
+(%): 0.02%
 🏆 Classificação Sula
-(%): 15.30%
-
+(%): 0.00%
 🏆 Classificação Libertadores
-(%): 0.50%
+(%): 0.00%
 
 Fonte: UFMG
 ```
 
-## 🚀 Como Usar
+## 🔧 Manutenção
 
-### Pré-requisitos
+### Logs
 
-* Conta no Twitter/X com API access
-* Conta no GitHub
-* Python 3.13+ (para testes locais)
+Os logs são salvos em `logs/vitoria_bot.log` e contêm:
 
-### Configuração
+* Requisições HTTP realizadas
+* Dados extraídos
+* Tweets gerados
+* Erros e avisos
 
-1. **Clone o repositório**
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
-   ```
-2. **Obtenha as credenciais da API do Twitter**
-   * Acesse [Twitter Developer Portal](https://developer.twitter.com/)
-   * Crie um novo app ou use um existente
-   * Gere as seguintes credenciais:
-     * API Key (Consumer Key)
-     * API Secret (Consumer Secret)
-     * Access Token
-     * Access Token Secret
-3. **Configure os Secrets no GitHub**
-   * Vá em `Settings` → `Secrets and variables` → `Actions`
-   * Adicione os seguintes secrets:
-     * `API_KEY`
-     * `API_SECRET`
-     * `ACCESS_TOKEN`
-     * `ACCESS_TOKEN_SECRET`
-4. **Crie o arquivo requirements.txt**
-   ```txt
-   requests==2.31.0
-   beautifulsoup4==4.12.3
-   tweepy==4.14.0
-   ```
+### Tratamento de Erros
 
-### Execução Local (Testes)
+O bot possui tratamento de erros para:
 
-```bash
-# Instalar dependências
-pip install -r requirements.txt
+* Falhas de conexão
+* Páginas indisponíveis
+* Dados incompletos
+* Erros de autenticação do Twitter
+* Limites de API
 
-# Configurar variáveis de ambiente
-export API_KEY="sua_api_key"
-export API_SECRET="sua_api_secret"
-export ACCESS_TOKEN="seu_access_token"
-export ACCESS_TOKEN_SECRET="seu_access_token_secret"
+### GitHub Actions
 
-# Executar o script
-python main.py
-```
-
-### Automação via GitHub Actions
-
-O bot está configurado para rodar automaticamente:
-
-* **Horário** : Todos os dias às 14h UTC (11h horário de Brasília)
-* **Execução manual** : Disponível através da aba `Actions` no GitHub
-
-Para executar manualmente:
-
-1. Vá em `Actions` no repositório
-2. Selecione `Post diario no Twitter`
-3. Clique em `Run workflow`
-
-## 🔧 Personalização
-
-### Alterar o time
-
-No arquivo `main.py`, modifique a variável:
-
-```python
-TIME_ALVO = "VITORIA"  # Altere para o nome do seu time
-```
-
-### Alterar o horário de postagem
-
-No arquivo `daily_post.yml`, modifique a linha do cron:
+Exemplo de workflow (`.github/workflows/bot.yml`):
 
 ```yaml
-- cron: '0 14 * * *'  # Formato: minuto hora dia mês dia-da-semana
+name: Vitória Bot
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # Diariamente às 18h UTC
+  workflow_dispatch:  # Permite execução manual
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+  
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+  
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+  
+      - name: Run bot
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+        run: python main.py
 ```
-
-Exemplos:
-
-* `0 12 * * *` - Meio-dia UTC (9h Brasília)
-* `0 18 * * *` - 18h UTC (15h Brasília)
-* `0 21 * * 1-5` - 21h UTC apenas em dias úteis
-
-## 📦 Estrutura do Projeto
-
-```
-.
-├── main.py              # Script principal do bot
-├── daily_post.yml       # Configuração do GitHub Actions
-├── requirements.txt     # Dependências Python
-└── README.md           # Este arquivo
-```
-
-## 🛠️ Tecnologias Utilizadas
-
-* **Python 3.13** : Linguagem principal
-* **Tweepy** : Biblioteca para API do Twitter
-* **BeautifulSoup4** : Web scraping dos dados
-* **Requests** : Requisições HTTP
-* **GitHub Actions** : Automação e agendamento
-
-## 📊 Fonte dos Dados
-
-Os dados são obtidos do site de estatísticas de futebol da **UFMG** (Universidade Federal de Minas Gerais):
-
-* https://www.mat.ufmg.br/futebol/
-
-## ⚠️ Observações
-
-* O bot respeita o limite de 280 caracteres do Twitter
-* Se o tweet ultrapassar o limite, será truncado automaticamente
-* As probabilidades são calculadas matematicamente pela UFMG
-* O horário padrão é 11h (horário de Brasília) durante toda a temporada
 
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Sinta-se à vontade para:
 
-1. Fazer um fork do projeto
-2. Criar uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abrir um Pull Request
+* Reportar bugs
+* Sugerir novas funcionalidades
+* Enviar pull requests
 
-## 📝 Licença
+## ⚠️ Avisos Importantes
 
-Este projeto é de código aberto e está disponível para uso pessoal e educacional.
+1. **Respeite os limites da API do Twitter** - não execute o bot com muita frequência
+2. **Verifique os Termos de Uso** da UFMG antes de fazer scraping em larga escala
+3. **Mantenha suas credenciais seguras** - nunca commite credenciais no git
+
+## 📄 Licença
+
+Este projeto é open source. Use-o livremente para fins educacionais e pessoais.
+
+## 🙏 Créditos
+
+* Dados: [UFMG - Matemática do Futebol](https://www.mat.ufmg.br/futebol/)
+* Time: EC Vitória 🔴⚫
 
 ## 👤 Autor
 
-Criado com ❤️ por [@Guilherme1ss](https://github.com/Guilherme1ss) — um torcedor do Vitória!
+Criado com ❤️ por [@Guilherme1ss](https://github.com/Guilherme1ss) — um torcedor do Vitória, para a torcida do Colossal!
 
 ---
 
