@@ -2,8 +2,6 @@
 
 Bot automatizado que coleta estatísticas do EC Vitória do site da UFMG e posta atualizações no Twitter.
 
-## 🤖 Automação
-
 ## 📋 Funcionalidades
 
 * ✅ Coleta dados da classificação geral do Brasileirão Série A
