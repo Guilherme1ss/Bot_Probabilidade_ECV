@@ -75,7 +75,7 @@ def gerar_tweet(
     """
     # Cabeçalho
     partes = [
-        f"EC VITÓRIA {EMOJI_TIME}",
+        f"{TIME_ALVO} {EMOJI_TIME}",
         f"{EMOJIS['calendario']} {datetime.now().strftime('%d/%m/%y')}"
     ]
 
